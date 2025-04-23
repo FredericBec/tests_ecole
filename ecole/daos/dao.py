@@ -12,12 +12,22 @@ import pymysql.cursors
 
 @dataclass
 class Dao[T](ABC):
-    connection: ClassVar[pymysql.Connection] = \
-        pymysql.connect(host='localhost',
-                        user='ecole',
-                        password='FqDEuKWd9TxLERZg6ooh',
-                        database='ecole',
-                        cursorclass=pymysql.cursors.DictCursor)
+    connection: ClassVar[Optional[pymysql.Connection]] = None
+
+    @classmethod
+    def get_connection(cls):
+        """
+        créer la connexion au lieu qu'elle soit directement instancié à l'import de la dao
+        """
+        if cls.connection is None:
+            cls.connection = pymysql.connect(host='localhost',
+                                             user='ecole',
+                                             password='FqDEuKWd9TxLERZg6ooh',
+                                             database='ecole',
+                                             cursorclass=pymysql.cursors.DictCursor
+                                             )
+
+        return cls.connection
 
     @abstractmethod
     def create(self, obj: T) -> int:
