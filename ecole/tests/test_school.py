@@ -52,3 +52,46 @@ def test_get_course(mock_dao_connection, mocker):
     expected_course = Course("maths", datetime.date(2000, 2, 26), datetime.date(2001, 2, 18))
 
     assert School.get_course_by_id(1) == expected_course
+
+
+def test_add_course_school(mocker):
+    school = School()
+    mock_course = mocker.patch('models.course.Course')
+    course = mock_course.return_value
+    course.name = "test course"
+    course.start_date = datetime.date(2007, 2, 6)
+    course.end_date = datetime.date(2008, 5, 14)
+
+    school.add_course(course)
+
+    assert len(school.courses) == 1
+    assert school.courses[0] == course
+
+
+def test_add_teacher_school(mocker):
+    school = School()
+    mock_teacher = mocker.patch('models.teacher.Teacher')
+    teacher = mock_teacher.return_value
+    teacher.first_name = "Gaston"
+    teacher.last_name = "Lagaffe"
+    teacher.age = 45
+    teacher.hiring_date = datetime.date(1990, 8, 20)
+
+    school.add_teacher(teacher)
+
+    assert len(school.teachers) == 1
+    assert school.teachers[0] == teacher
+
+
+def test_add_student_school(mocker):
+    school = School()
+    mock_student = mocker.patch('models.student.Student')
+    student = mock_student.return_value
+    student.first_name = "Toto"
+    student.last_name = "Zero"
+    student.age = 11
+
+    school.add_student(student)
+
+    assert len(school.students) == 1
+    assert school.students[0] == student
